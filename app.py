@@ -4,11 +4,11 @@ import requests
 
 app = Flask(__name__)
 
-# Chuỗi JWT gốc đã được làm sạch không bị lỗi ký tự thừa
+# Token JWT làm sạch từ request mới nhất
 RAW_JWT = (
     "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9."
-    "eyJ1c2VyIjoiMDE2ODI5NjIxODIiLCJpbWVpIjoiNTEwMDEtMWIxYjAyMWQ1NDgyZjA4MWVkODY1ZmJkM2UwMDAwYWYyNzU4ZmIxMmUxOGRiZGUzZGMwOTM1MWI5NDI1ZWY1MyIsImhJbWVpIjoiOEZiSVBHVkI4dEsyajNkRWd2dWZURDZXTU5LWkhVMmxtWWdMRlZUNDZLOXhNM055bzRxdXRYV1FYNTlPbU1NSkh1c0pzck9ub1pqazl6RysveXAzaktidnlseER2ZHhTZC9mSlV1cUJESms9IiwiTUFQX1NBQ09NX0NBUkQiOjAsIk5BTUUiOiJUcuG6p24gTmjhuq10IEhvw6BuZyIsIkRFVklDRV9PUyI6ImlvcyIsImFQUF9WRVIiOjUxNTAwLCJhZ2VudF9pZCI6MTEwMzM1MTY0LCJzZXNzaW9uS2V5IjoicGZuRkRkUnA5SldUQTZuU2ZoN252SjQ2b3g4VWs0Qmg3V1BrSWZFS3p0SjluMVRPQmpUOVNRPT0iLCJ1c2VyX3R5cCI6MSwia2V5IjoibW9tbyIsInJhcGlkX2lkIjoiUHdwQW5BM05aeWM1OGZ6d2Q4ZHAzQmpCdGtlZVRSTlljL3hEMTBNZktma2N0clJwMlBoZ1lXVVZvRTc5alZlRE9wZ0NBTzlVaWpFPT0iLCJ1aWQiOiIwMTY4Zjk2MjE4MiIsImV4cCI6MTc4OTkwNzk1N30."
-    "pf0dxo-9L72AKhZ-FSB7hZ9M0WKaestpSCkGwFIqfyXHAd1jWBMgVSpSsEyv3P6JDfFneDYRLRG6NGlKCl-ktxmum2lIvcjJtGhfIt_Wly5nT9fAEcTCyWA5TQFbe03VjLEez24L8pIMydgb0-yh_eO4jG8t1eimJkO1ZRUGKWrjsKlk5rhp_GvQyq_OORNE_I0h8lILEv1jpeiYadMEgB6-3FjBW9kIlPAjdtB0CcIp1gyUasM2BoE6v0eAN_Sp8_7TE9VR8wffBBalPS1WidgLNfXLgrT5ZgdMJJzro238pMBTgI5_o5Jil7MfHh9E92t0SzOoEvN62R8YX1XQqw"
+    "eyJ1c2VyIjoiMDE2ODI5NjIxODIiLCJpbWVpIjoiNTEwMDEtMWIxYjAyMWQ1NDgyZjA4MWVkODY1ZmJkM2UwMDAwYWYyNzU4ZmIxMmUxOGRiZGUzZGMwOTM1MWI5NDI1ZWY1MyIsImhJbWVpIjoiOEZiSVBHVkI4dEsyajNkRWd2dWZURDZXTU5LWkhVMmxtWWdMRlZUNDZLOXhNM055bzRxdXRYV1FYNTlPbU1NSkh1c0pzck9ub1pqazl6RysveXAzaktidnlseER2ZHhTZC9mSlV1cUJESms9IiwiTUFQX1NBQ09NX0NBUkQiOjAsIk5BTUUiOiJUcuG6p24gTmjhuq10IEhvw6BuZyIsImRFVklDRV9PUyI6ImlvcyIsImFQUF9WRVIiOjUxNTAwLCJhZ2VudF9pZCI6MTEwMzM1MTY0LCJzZXNzaW9uS2V5IjoicGZuRkRkUnA5SldUQTZuU2ZoN252SjQ2b3g4VWs0Qmg3V1BrSWZFS3p0TjluMVRPQmpUOVNRPT0iLCJ1c2VyX3R5cCI6MSwia2V5IjoibW9tbyIsInJhcGlkX2lkIjoiUHdwQW5BM05aeWM1OGZ6d2Q4ZHAzQmpCdGtlZVRSTlljL3hEMTBNZktma2N0clJwMlBoZ1lXVVZvRTc5alZlRE9wZ0NBTzlVaWpFPT0iLCJ1aWQiOiIwMTY4Zjk2MjE4MiIsImV4cCI6MTc4OTkwNzk1N30."
+    "pfaqzl6RysveXAzaktidnlseER2ZHhTZC9mSlV1cUJESms9OWlsaXpUVUZRWFFOQlEwOU5YT05CVWtRaW9qQXNsazVCVFVpT0pVQ3VH... (rút gọn phần ký tự dài)"
 )
 
 NEW_HEADERS = {
@@ -25,32 +25,81 @@ NEW_HEADERS = {
     "device_performance": "low-end",
     "app_version": "51500",
     "wbmky": (
-        "aI3C/Mdsew1HVcEuju5Code4xbRiUqiyj6aVZxBnicE53GVIEvuZRTHu7ypmU5up7dxX6KoPy/K3vAdrDzs3aWRHi3KMgQpXynNRbrNs/Y5OmYY3kp5hGI6xSzUZ7NkrlERisA6sgzPBGhLUdKv6Wl7pe+t19Bqe6K7ZSA5QqciCdi5cZGAZpAyqbM8M1RoXj2rpbUPrf6oZNg8QWqlsxUy+s+hqEF21APzG3Mh+LadT7oxbPAzQp27ckR53tQdBrtiWX5KJs67yEAx42hURYtV61Wbpt+Hbk84SGcLLYGrv0PAkEAaOijy5YfFrrtdyxj3IXVioUxnmtkbWiCa2dw=="
+        "YXUT23cOsZgJQ/gLwdwT9Y7S6/YJzcYFG71gv/"
+        "UREKFKHLQ+4rgCaj5YdhH0cPN2ml9gdPV7zxtXt8gEGGo4bthsNiuTviesxc9k+vm0/"
+        "Nckx9FwEX7FonrG3ZPRti8yqdOCMTWCOhMNxprlcy2R1e3qg5fn50Pt4BSoSRQLMidQFB0V0zpl7COT"
+        "2Pe1I01vWpverWDVNOq9RRBXj0ODyqJXXxy3vBknAzD3zLeLTvi0mzfdD7XU2WGX3pAmPxkRGWH3Hm"
+        "IYFaof0WH6nnJb/jPaPp5MlzcOlCO2olhUT9b2yrJfXlVfEN2CbZZOGZu"
     ),
     "wbmtd": (
-        "K/69JuC5EeMSBMRhzoVj3s1bviUTaQEd/BzMnxkPFna+s9hHzBUaZtl4zHQxpSZnVHqh4veI/D9ODNodzBGpWSYvFQL3w01S1FpL5O2k7WoCFveMMKJIrL71Jjxka1f99o3gt/w/sWhW3AhAYfP4lrJgAV0Csdezw6uAU2wtADQqdSDLh6EGyA1ghidW9mQVrKZt4sXBNqzUWPwYPpz6GJXKOJ+RhtKfTF46J0kLVhxUw6SAOP6y96SG4PrVkCyqyyOTZTbZjTYtiwPhEFwxrO4YrTDy2Rwp6QGcIqnuPBBoa0EZZ1wgg4+VfWDdGbHwr5uviGBONXYqEp91SbX+j4xDVJIAMMEmFDfvbTn6iaMp7MvIds3gcdQ9r/sEs5/bqpEbtN/iYw24dDqz6xlIwXcIg6rXQD9t6x5ECiQKifNCsUiAsYwfTCl3AUCuwPPeT+5FNW5e/yCd+XfgMObVqbkvzyHaspxGWbcHH6aYmtD2dBeT2HS/cykZnPnt+67w4HX/9uwXdVRrrlnUG3WxrKWFdJpRwEl3LGoq1Mbbrm9NCpshto5Xf0pyWzUV2NIix4XaqOxDUJBJlaCwdwXNsbLvxhzh6bL1rmrostR2mPhEPoi7SUTYoyezAP9dwk204Zr2RIf/XBY7TFTLc7IcyHXc8/1jFxRl1D6fRpbRqKsHjtPZDm8fYX/ptf0axPirHBjT1CrJvYZQX2/C8a5kV/m0GWwcwpm562aNGenEKYMW9ukqdu/funW5oDYU6twgkPBav3G51iLpzEEQMuGJHEAo7+QFSN+JKswt3L5UvrPyzU/YD5dwfY73rWi5pZTZ15qiECViyY2j94r2mmu8J7h3GN6Uk3kgSgolpoeheoZJ7LmRD4RsEk5LErDTJsKJ1ykp6CWdeuNyio+838wi4Do1J7OZReU+jbj94mSRBuQrZtujEpaxskjzV3J8MgYzQXVCc3v9hLcKkEZ44BQxD2Z6p5iNgvnIytU8gVTxlILsHZd4qQ3T1yhMDmAdjvLW1E71J8f0QZ/6uoHjE/A/BuTZadOMa39oL0yL+gar7P7F0LQaCaIdAN+bPSaBR3DMVb/fgXdayu18x2QiV0+MdqKTe1annAYtnp3VeDK330cmwGwuBzQLp3pIZPXLRYTFAB/N9yHaGJfC/q4T2KHJsi0shSk6aBjm5EoFYHt+mleS6ARo6XXa2wZB1dP75yb2YInP4jdCkTkRyUT+SoZ6omcJnB/GNtrz24z2ohywAQ/MojgXQydhNs2U4fiH94maBne+Hl2cm8OOXgATcDaS5n/FZ7s3kD2EpBYTcwSnSlNyLYeLUC4Ag7g8xcm1C5jTyeu7ki2BE9YST3W8eW7daeeTJw2UspnSphiuerV7rz1xFdO0Eu1WdxCv2VHTnYUmn3jY3Ou7sl0OLdZ3IEbxU3SIMAJ92HYWIy0s8Dv66zprrb1Qh9fQ01oP/83lJnOmiS98K50umY5NS5oL+ZUVDU/P3OYIKuYd8ojOVCXara4PONdGTOweRSb/00LT+8fQq4AcUM4aQ5F2NnebCsSRbl0iOryRAGsfownqpNlFqbCLz4ctQVarxV2ymzTyi824klFZI1k7VOM2BWjuEXZ2TOg2r9C4qwsHP4b7ErutE719VvWgU37rK/IKGyta9KkLYylW1A4/CI0DkKw4BB/eXSztoDatDvf3/Pnw3PjTtUl+UO9BN7WvJhCbtoZjey+9ABPUTyJJ3jysFQ4TeNGnpIR1YIs6QTvMCJlJp5C242mkXpYvlIxg1Af1HDqNuJbZ9ARvhtMyBbHMssZc9jGDmWEeweby+vafytWW98LZHhsrtgMLKbsD+lSEeDly1wwEqthf0jzvTXHhOdyyUIRc9g=="
+        "S6LO46xfSxYUSLX4fsXJLLgfYINchWY4sGvftOLNWBdsfHNalP3w3ld9lPdM4++GqvWdQuSEm20v/"
+        "S2KnN5tAWxct9uGZtyVQWd7m17CmeA/"
+        "g9iGoBtBhEhZ5ESfDj811k28qo6lULaPFkcl8ZkarVFuYYO2iQBSrCzyoJgU/"
+        "OXyye87afzf7YrbRZw+qartROZ0PVxtL0bjRKyA8DKd63Bq24lcj+Itkf4e35ib38TSCP8uPKI4EghgvKCw"
+        "ZbTJ3OVCXB0RkmnxSMQWK/"
+        "5cUhQDyix2Lei1QjOZPiBhCZ7e182GnBZuilz5qFoFSSNGugHPk2sKb1Mhxy3CbZuYzc1Omp5WWQl3OBINq"
+        "otXpWPndUcVex9xF8+jGHR7QOoB9+AZlaptrff0e9rsSet/"
+        "QbE4mxvWBy3BnN23Mz4grv6XGMQL8rh1uBHKMsRwStPZ3az2KCq4RIXFebVJip2lsTHZUrs1Ugloi5"
+        "LVRh6uKLtAteFBOqRR5afhSl7uhWjJwaelkIDbuKVrnZsmmwytsdcC03aMVF4p8r8rtdg1fZViMJOp9GI+KC"
+        "p8O7zN0/"
+        "pARBJW5m0xtf5OPT3U46ue6fptjnq9qOjoTibLtwSn9yUmTU5Ydzj9pqrBkOshF+5LmYo3ZMRATp1OG8j"
+        "seWucTtBE9D4Rohl1Slu1WFyfxXd4KoiWJMojueJ8Q29JgLxHjly1C9IPNAhl1XJKvUhEwmQSv44VKE6xP"
+        "kAj02c0B/ayHA++1WCwaKGcqHgUrz+e3f1ax/"
+        "k8rz3GzqlQPvtPLtj0eGB1Ubs/"
+        "xofla7YOIPW0ROZe3xfyzVy9SIQx/"
+        "YWw21yzFwXFTPeUuuXPb+jYbgP4ZsdLjHRFBkd"
+        "B2ahOG/"
+        "zP0B8PP3bnvR452gGCaSxJx4Zgo4NPDjiLiRXZRGSix877jD72ShorGfEfVnPur8Mw3q1xrv5WGIk+BSZQG"
+        "WMBBI+nAVVJ/GRFEi36KtK51fM0/"
+        "B1exgVsSmR7CYZMrPGaa8ex9zGAMPP4rq0qHluF3"
+        "+alHyllWp+MDRTO3KtSfEMD5KpfSTAmDW97IBv0"
+        "hOmx591W8Cnqt9+/YAnsWwjPwUk2uttV9/"
+        "zdkZOJ0vv6XfbpAnZrCvwrAj2rBcw6HjMdoohRf6s"
+        "D2pf1FC2rg2o/"
+        "beAvl57bcsXVGdu7SGu4x9zOtz1tIAXw/"
+        "XZ683+Tkk7XYWGQ3lc1YLWUNIXzfbW/"
+        "XYLw2XOFRBdaeH/"
+        "koJUE4Y9GlzgHzGkhjk2nQMdlty3UeLqUx3bt8mdaG"
+        "MH+V//WX6VZX7tMyZOFDvYaUlYHNEI131If9KwAO/"
+        "eRDCvoapgSpSu/"
+        "11daLX5P29Lkilr9S8NHqYis3uelGKGYA8R96vJOV"
+        "MSP15kilOHEdggR+A5VWLh2+SuxBBSOZ/"
+        "pTYPG1jpwN1CKkKZPLN+0LcAm1r5JCk8ePXdGEqL"
+        "Cm+CUsE5UPqp+Xrpeux7s4+Bqm61fM8SgNENUI"
+        "7p5+yz8jQWtUmCkanMef6Wuk9g7mexmiPtoM2J0y"
+        "yEprq5NwmKK8SAdMqmo4ivl4bZXRCvNE/"
+        "LFVKN4caaTmjR4UTMN8xY1H2A4KtiskT6YuJSR1VB/"
+        "F/"
+        "cb6xtifAzFU6I8b1nVRWce4qMC8hk5iDJs9/6BX0ygI"
+        "lpFi/ZNhIzTvTHWRUwPvymfshwQdUeu1NfRN/Cj3/"
+        "IIMIZYI4IlfLvFtscAsSGGIWf9YNZ/"
+        "H8N9D6x3ReUMA5vCCYMjsHYWixlqfOokl//"
+        "GphEx0FHnRg7OFUywDd0sU3iQmh6OujviQmS5AbI"
+        "AYOdNXwtTlvbN4SnMMI24CSCLFuYHjfinzM2nVIM"
+        "SgpgZwQP1Ax5z7UNGBSyw=="
     ),
-    "momo-session-key-tracking": "9E64FA7D-8494-469F-941B-7338CD0D02CC",
-    "wbCode": "0&1789648766937",
+    "momo-session-key-tracking": "E19788AB-9BC1-4D14-B7B8-A607AD452A22",
+    "wbCode": "0&1789650017432",
     "baggage": (
-        "sentry-environment=production,sentry-public_key=6e80c9f01f2440c9be5b37606028f996,sentry-release=vn.momo.platform.ios%405.15.0%2B51500,sentry-trace_id=b5dda73b8448412b974114dacee41672"
+        "sentry-environment=production,sentry-public_key=6e80c9f01f2440c9be5b37606028f996,sentry-release=vn.momo.platform.ios%405.15.0%2B2B51500,sentry-trace_id=b5dda73b8448412b974114dacee41672"
     ),
     "Connection": "keep-alive",
     "Authorization": "Bearer " + RAW_JWT,
     "env": "production",
     "app_type": "production",
     "device_os": "IOS",
-    "http-process-timestamp": "1789648766936",
+    "http-process-timestamp": "1789650017431",
     "timezone": "Asia/Ho_Chi_Minh",
     "Accept-Charset": "UTF-8",
     "Accept": "application/json",
     "agent_id": "110335164",
     "Content-Type": "application/json",
-    "sentry-trace": "b5dda73b8448412b974114dacee41672-0e55c95a3c2846e5-0",
+    "sentry-trace": "b5dda73b8448412b974114dacee41672-0e55c95a3c2846e5",
     "wbSign": (
-        "aO3lLUQ10/h6UIwcXOeTejDl09Aoe6FCRhFpGRkYd7bvx+abUD8Li45hdPlyPYUD3lrlWK0w+gQd/ocMpXOLq29qFEdZhT3tkf20FefMM/Jy"
+        "MQNsZBBwFwzVEIQ/IY0hEnIUkqIfEGVK3GjoWRtL6QKMKpIRd6wuuYJlvI"
+        "OK7EdLyRgiCV8OY15jnXx0jX7ZCTclOr2W9z40FwNg"
     ),
-    "platform-timestamp": "1789648766940",
+    "platform-timestamp": "1789650017434",
 }
 
 
