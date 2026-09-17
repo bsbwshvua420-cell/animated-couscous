@@ -1,10 +1,16 @@
 import os
-from flask import Flask, jsonify, request
+from Flask import Flask, jsonify, request
 import requests
 
 app = Flask(__name__)
 
-# Bộ headers mới nhất vừa bắt được
+# Chuỗi JWT gốc đã được làm sạch không bị lỗi ký tự thừa
+RAW_JWT = (
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9."
+    "eyJ1c2VyIjoiMDE2ODI5NjIxODIiLCJpbWVpIjoiNTEwMDEtMWIxYjAyMWQ1NDgyZjA4MWVkODY1ZmJkM2UwMDAwYWYyNzU4ZmIxMmUxOGRiZGUzZGMwOTM1MWI5NDI1ZWY1MyIsImhJbWVpIjoiOEZiSVBHVkI4dEsyajNkRWd2dWZURDZXTU5LWkhVMmxtWWdMRlZUNDZLOXhNM055bzRxdXRYV1FYNTlPbU1NSkh1c0pzck9ub1pqazl6RysveXAzaktidnlseER2ZHhTZC9mSlV1cUJESms9IiwiTUFQX1NBQ09NX0NBUkQiOjAsIk5BTUUiOiJUcuG6p24gTmjhuq10IEhvw6BuZyIsIkRFVklDRV9PUyI6ImlvcyIsImFQUF9WRVIiOjUxNTAwLCJhZ2VudF9pZCI6MTEwMzM1MTY0LCJzZXNzaW9uS2V5IjoicGZuRkRkUnA5SldUQTZuU2ZoN252SjQ2b3g4VWs0Qmg3V1BrSWZFS3p0SjluMVRPQmpUOVNRPT0iLCJ1c2VyX3R5cCI6MSwia2V5IjoibW9tbyIsInJhcGlkX2lkIjoiUHdwQW5BM05aeWM1OGZ6d2Q4ZHAzQmpCdGtlZVRSTlljL3hEMTBNZktma2N0clJwMlBoZ1lXVVZvRTc5alZlRE9wZ0NBTzlVaWpFPT0iLCJ1aWQiOiIwMTY4Zjk2MjE4MiIsImV4cCI6MTc4OTkwNzk1N30."
+    "pf0dxo-9L72AKhZ-FSB7hZ9M0WKaestpSCkGwFIqfyXHAd1jWBMgVSpSsEyv3P6JDfFneDYRLRG6NGlKCl-ktxmum2lIvcjJtGhfIt_Wly5nT9fAEcTCyWA5TQFbe03VjLEez24L8pIMydgb0-yh_eO4jG8t1eimJkO1ZRUGKWrjsKlk5rhp_GvQyq_OORNE_I0h8lILEv1jpeiYadMEgB6-3FjBW9kIlPAjdtB0CcIp1gyUasM2BoE6v0eAN_Sp8_7TE9VR8wffBBalPS1WidgLNfXLgrT5ZgdMJJzro238pMBTgI5_o5Jil7MfHh9E92t0SzOoEvN62R8YX1XQqw"
+)
+
 NEW_HEADERS = {
     "Host": "api.momo.vn",
     "sessionKey": "30da4265-b745-46d0-93fe-de6f1f1b9528",
@@ -30,10 +36,7 @@ NEW_HEADERS = {
         "sentry-environment=production,sentry-public_key=6e80c9f01f2440c9be5b37606028f996,sentry-release=vn.momo.platform.ios%405.15.0%2B51500,sentry-trace_id=b5dda73b8448412b974114dacee41672"
     ),
     "Connection": "keep-alive",
-    "Authorization": (
-        "Bearer"
-        " eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VyIjoiMDE2ODI5NjIxODIiLCJpbWVpIjoiNTEwMDEtMWIxYjAyMWQ1NDgyZjA4MWVkODY1ZmJkM2UwMDAwYWYyNzU4ZmIxMmUxOGRiZGUzZGMwOTM1MWI5NDI1ZWY1MyIsImhJbWVpIjoiOEZiSVBHVkI4dEsyajNkRWd2dWZURDZXTU5LWkhVMmxtWWdMRlZUNDZLOXhNM055bzRxdXRYV1FYNTlPbU1NSkh1c0pzck9ub1pqazl6RysveXAzaktidnlseER2ZHhTZC9mSlV1cUJESms9IiwiTUFQX1NBQ09NX0NBUkQiOjAsIk5BTUUiOiJUcuG6p24gTmjhuq10IEhvw6BuZyIsIkRFVklDRV9PUyI6ImlvcyIsImFQUF9WRVIiOjUxNTAwLCJhZ2VudF9pZCI6MTEwMzM1MTY0LCJzZXNzaW9uS2V5IjoicGZuRkRkUnA5SldUQTZuU2ZoN252SjQ2b3g4VWs0Qmg3V1BrSWZFS3p0SjluMVRPQmpUOVNRPT0iLCJ1c2VyX3R5cCI6MSw notammentiOiJtb21vIiwicmFwaWRfaWQiOiJQd3BBbkAzTlp4YzU4Rnp3ZDhkcDNCakJ0a2VlVlJZQlcveEQxTWZLZmtjdHJCcFpQaGdZV1VWb0U3OWpWZURPcGdDQU85VVpqRT0iLCJ1aWQiOiIwMTY4Zjk2MjE4MiIsImV4cCI6MTc4OTkwNzk1N30.pf0dxo-9L72AKhZ-FSB7hZ9M0WKaestpSCkGwFIqfyXHAd1jWBMgVSpSsEyv3P6JDfFneDYRLRG6NGlKCl-ktxmum2lIvcjJtGhfIt_Wly5nT9fAEcTCyWA5TQFbe03VjLEez24L8pIMydgb0-yh_eO4jG8t1eimJkO1ZRUGKWrjsKlk5rhp_GvQyq_OORNE_I0h8lILEv1jpeiYadMEgB6-3FjBW9kIlPAjdtB0CcIp1gyUasM2BoE6v0eAN_Sp8_7TE9VR8wffBBalPS1WidgLNfXLgrT5ZgdMJJzro238pMBTgI5_o5Jil7MfHh9E92t0SzOoEvN62R8YX1XQqw"
-    ),
+    "Authorization": "Bearer " + RAW_JWT,
     "env": "production",
     "app_type": "production",
     "device_os": "IOS",
@@ -44,7 +47,9 @@ NEW_HEADERS = {
     "agent_id": "110335164",
     "Content-Type": "application/json",
     "sentry-trace": "b5dda73b8448412b974114dacee41672-0e55c95a3c2846e5-0",
-    "wbSign": "aO3lLUQ10/h6UIwcXOeTejDl09Aoe6FCRhFpGRkYd7bvx+abUD8Li45hdPlyPYUD3lrlWK0w+gQd/ocMpXOLq29qFEdZhT3tkf20FefMM/Jy",
+    "wbSign": (
+        "aO3lLUQ10/h6UIwcXOeTejDl09Aoe6FCRhFpGRkYd7bvx+abUD8Li45hdPlyPYUD3lrlWK0w+gQd/ocMpXOLq29qFEdZhT3tkf20FefMM/Jy"
+    ),
     "platform-timestamp": "1789648766940",
 }
 
