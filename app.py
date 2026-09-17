@@ -4,11 +4,10 @@ import requests
 
 app = Flask(__name__)
 
-# Token JWT làm sạch từ request mới nhất
 RAW_JWT = (
     "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9."
     "eyJ1c2VyIjoiMDE2ODI5NjIxODIiLCJpbWVpIjoiNTEwMDEtMWIxYjAyMWQ1NDgyZjA4MWVkODY1ZmJkM2UwMDAwYWYyNzU4ZmIxMmUxOGRiZGUzZGMwOTM1MWI5NDI1ZWY1MyIsImhJbWVpIjoiOEZiSVBHVkI4dEsyajNkRWd2dWZURDZXTU5LWkhVMmxtWWdMRlZUNDZLOXhNM055bzRxdXRYV1FYNTlPbU1NSkh1c0pzck9ub1pqazl6RysveXAzaktidnlseER2ZHhTZC9mSlV1cUJESms9IiwiTUFQX1NBQ09NX0NBUkQiOjAsIk5BTUUiOiJUcuG6p24gTmjhuq10IEhvw6BuZyIsImRFVklDRV9PUyI6ImlvcyIsImFQUF9WRVIiOjUxNTAwLCJhZ2VudF9pZCI6MTEwMzM1MTY0LCJzZXNzaW9uS2V5IjoicGZuRkRkUnA5SldUQTZuU2ZoN252SjQ2b3g4VWs0Qmg3V1BrSWZFS3p0TjluMVRPQmpUOVNRPT0iLCJ1c2VyX3R5cCI6MSwia2V5IjoibW9tbyIsInJhcGlkX2lkIjoiUHdwQW5BM05aeWM1OGZ6d2Q4ZHAzQmpCdGtlZVRSTlljL3hEMTBNZktma2N0clJwMlBoZ1lXVVZvRTc5alZlRE9wZ0NBTzlVaWpFPT0iLCJ1aWQiOiIwMTY4Zjk2MjE4MiIsImV4cCI6MTc4OTkwNzk1N30."
-    "pfaqzl6RysveXAzaktidnlseER2ZHhTZC9mSlV1cUJESms9OWlsaXpUVUZRWFFOQlEwOU5YT05CVWtRaW9qQXNsazVCVFVpT0pVQ3VH... (rút gọn phần ký tự dài)"
+    "pfaqzl6RysveXAzaktidnlseER2ZHhTZC9mSlV1cUJESms="
 )
 
 NEW_HEADERS = {
@@ -115,8 +114,13 @@ def get_momo_history():
   url = "https://api.momo.vn/transhis/api/transhis/golden-pocket/trans/browse"
 
   try:
+    # Ép các giá trị header về chuẩn latin-1 an toàn để tránh lỗi codec
+    safe_headers = {
+        k: str(v).encode("utf-8", errors="ignore").decode("latin-1")
+        for k, v in NEW_HEADERS.items()
+    }
     payload = request.get_json(silent=True) or {}
-    res = requests.post(url, headers=NEW_HEADERS, json=payload, timeout=15)
+    res = requests.post(url, headers=safe_headers, json=payload, timeout=15)
     return jsonify(res.json()), res.status_code
   except Exception as e:
     return jsonify({"error": str(e)}), 500
